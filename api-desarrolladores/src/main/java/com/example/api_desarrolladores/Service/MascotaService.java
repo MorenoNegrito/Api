@@ -14,23 +14,22 @@ public class MascotaService {
 
     private final MascotaRepository mascotaRepository;
 
-    public MascotaService(MascotaRepository mascotaRepository){
+    public MascotaService(MascotaRepository mascotaRepository) {
         this.mascotaRepository = mascotaRepository;
     }
 
-    //Todas las mosctas
-    public List<Mascota> listarMascota(){
-        return mascotaRepository.findAll();
-    }
-    //Buscar mascota por id
-    public Optional<Mascota> buscarPorId(Long id){
+    public Optional<Mascota> obtenerPorId(Long id) {
         return mascotaRepository.findById(id);
     }
 
-    public Mascota guardarMascota( Mascota mascota){
-        return mascotaRepository.save(mascota);
+
+    public List<Mascota> obtenerTodas() {
+        return mascotaRepository.findAll();
     }
 
+    public Mascota guardarMascota(Mascota mascota) {
+        return mascotaRepository.save(mascota);
+    }
     public Mascota actualizarMascota(Long id, Mascota mascotaActualizada){
         return mascotaRepository.findById(id).map(mascota -> {
             mascota.setNombre(mascotaActualizada.getNombre());
@@ -41,10 +40,9 @@ public class MascotaService {
         }).orElseThrow(() -> new RuntimeException("Mascota no encontrada con id" + id));
     }
 
-    public void eliminarMascota(Long id){
+    public void eliminarMascota(Long id) {
         mascotaRepository.deleteById(id);
     }
-
 
 
 
