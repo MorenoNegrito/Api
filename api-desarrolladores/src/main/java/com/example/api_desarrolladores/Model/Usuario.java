@@ -1,20 +1,22 @@
 package com.example.api_desarrolladores.Model;
 
+
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Entity
 @Data
-public class Mascota {
+public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String nombre;
-    private int edad;
-    private String raza;
+    private String correo;
+    private String telefono;
 
-    @ManyToMany
-    @JoinColumn(name = "usuario_id")
-    private Usuario propietario;
+    @OneToMany(mappedBy = "propietario", cascade = CascadeType.ALL)
+    private List<Mascota> mascotas;
 }
