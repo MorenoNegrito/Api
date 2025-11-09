@@ -1,7 +1,10 @@
 services:
   - type: web
     name: api-desarrolladores
-    env: java
+    env: docker
     plan: free
-    buildCommand: chmod +x ./mvnw && ./mvnw clean package -DskipTests
-    startCommand: java -jar target/*.jar
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
