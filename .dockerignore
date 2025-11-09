@@ -1,10 +1,41 @@
+# Git
 .git
-.idea
-.mvn
-target
-*.md
 .gitignore
 .gitattributes
-mvnw
-mvnw.cmd
+
+# IDE
+.idea
+.vscode
+*.iml
+*.iws
+*.ipr
+
+# Build
+target/
+!target/*.jar
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+
+# Logs
+*.log
+logs/
+
+# Documentation
+*.md
+README.md
+docs/
+
+# Config files
 render.yaml
+docker-compose.yml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+*~

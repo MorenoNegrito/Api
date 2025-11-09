@@ -3,8 +3,36 @@ services:
     name: api-desarrolladores
     env: docker
     plan: free
+    region: oregon  # Cambiar a 'singapore' para mejor latencia en LATAM
     dockerfilePath: ./Dockerfile
+
+    # Auto-deploy en cada push a main
+    autoDeploy: true
+
+    # Health check endpoint
     healthCheckPath: /actuator/health
+
+    # Variables de entorno
     envVars:
+      # Perfil de Spring Boot
       - key: SPRING_PROFILES_ACTIVE
         value: prod
+
+      # Optimización JVM para contenedor
+      - key: JAVA_OPTS
+        value: "-Xms256m -Xmx512m -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0"
+
+      # Timezone (opcional)
+      - key: TZ
+        value: America/Santiago
+
+      # Logging level (opcional)
+      - key: LOGGING_LEVEL_ROOT
+        value: INFO
+
+    # Configuración de recursos (plan free tiene límites)
+    # En planes pagos puedes ajustar:
+    # disk:
+    #   name: data
+    #   mountPath: /data
+    #   sizeGB: 1
