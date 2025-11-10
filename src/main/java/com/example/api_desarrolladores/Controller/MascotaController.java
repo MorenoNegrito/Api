@@ -56,12 +56,6 @@ public class MascotaController {
     }
 
 
-    @RestController
-    public class HealthController {
-        @GetMapping("/health")
-        public String health() {
-            return "API funcionando!";
-        }
-    }
+
 
 }
