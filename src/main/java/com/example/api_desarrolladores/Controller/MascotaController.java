@@ -54,4 +54,14 @@ public class MascotaController {
         mascotaService.eliminarMascota(id);
         return ResponseEntity.noContent().build();
     }
+
+
+    @RestController
+    public class HealthController {
+        @GetMapping("/health")
+        public String health() {
+            return "API funcionando!";
+        }
+    }
+
 }
