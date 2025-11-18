@@ -7,15 +7,12 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-// ============================================
-// USUARIO (Dueño de mascotas)
-// ============================================
 @Entity
-@Table(name = "usuarios")
+@Table(name = "veterinarios")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Usuario {
+public class Veterinario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,15 +27,28 @@ public class Usuario {
     private String password;
 
     private String telefono;
-    private String direccion;
+    private String especialidad;
+
+    @Column(unique = true)
+    private String licencia;
+
+    @ManyToOne
+    @JoinColumn(name = "sucursal_id")
+    private Sucursal sucursal;
 
     @Enumerated(EnumType.STRING)
-    private Rol rol = Rol.USUARIO;
+    private Rol rol = Rol.VETERINARIO;
 
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
-    private List<Mascota> mascotas;
+    @Column(name = "calificacion")
+    private Double calificacion = 0.0;
 
-    @OneToMany(mappedBy = "usuario")
+    @Column(name = "servicios_completados")
+    private Integer serviciosCompletados = 0;
+
+    @Column(name = "servicios_cancelados")
+    private Integer serviciosCancelados = 0;
+
+    @OneToMany(mappedBy = "veterinario")
     private List<Cita> citas;
 
     @Column(name = "created_at")

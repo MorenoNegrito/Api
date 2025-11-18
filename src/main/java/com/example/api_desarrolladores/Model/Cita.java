@@ -1,76 +1,73 @@
 package com.example.api_desarrolladores.Model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
+import jakarta.persistence.*;
+import lombok.*;
+import java.time.LocalDateTime;
+import java.util.List;
+
+
 @Entity
 @Table(name = "citas")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Cita {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // ===== DATOS VISIBLES PARA TODOS =====
+    @Column(name = "fecha_hora", nullable = false)
+    private LocalDateTime fechaHora;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EstadoCita estado = EstadoCita.PENDIENTE;
+
+    @Column(columnDefinition = "TEXT")
+    private String motivoCita;
+
+    @Column(columnDefinition = "TEXT")
+    private String mensajeCliente; // Mensaje del usuario al veterinario
+
+    // ===== DATOS SOLO PARA VETERINARIO Y ADMIN =====
+    @Column(columnDefinition = "TEXT")
+    private String diagnostico;
+
+    @Column(columnDefinition = "TEXT")
+    private String tratamiento;
+
+    @Column(columnDefinition = "TEXT")
+    private String observaciones;
+
+    // ===== DATOS SOLO PARA ADMIN =====
+    @Column(columnDefinition = "TEXT")
+    private String resenaVeterinario; // Reseña del vet al admin
+
+    // ===== RELACIONES =====
     @ManyToOne
-    @JoinColumn(name = "usuario_id")
-    private Usuario propietario;
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
 
     @ManyToOne
-    @JoinColumn(name = "mascota_id")
+    @JoinColumn(name = "mascota_id", nullable = false)
     private Mascota mascota;
 
-    private LocalDate fecha;
-    private LocalTime hora;
-    private String servicio;
+    @ManyToOne
+    @JoinColumn(name = "veterinario_id")
+    private Veterinario veterinario;
 
     @ManyToOne
-    @JoinColumn(name = "profesional_id")
-    private Profesional profesional;
+    @JoinColumn(name = "sucursal_id", nullable = false)
+    private Sucursal sucursal;
 
-    @JsonProperty("usuarioId")
-    public Long getUsuarioId() {
-        return propietario != null ? propietario.getId() : null;
-    }
+    @OneToOne(mappedBy = "cita", cascade = CascadeType.ALL)
+    private Resena resena;
 
-    @JsonProperty("usuarioId")
-    public void setUsuarioId(Long id) {
-        if (id != null) {
-            this.propietario = new Usuario();
-            this.propietario.setId(id);
-        }
-    }
+    @Column(name = "created_at")
+    private LocalDateTime createdAt = LocalDateTime.now();
 
-    @JsonProperty("mascotaId")
-    public Long getMascotaId() {
-        return mascota != null ? mascota.getId() : null;
-    }
-
-    @JsonProperty("mascotaId")
-    public void setMascotaId(Long id) {
-        if (id != null) {
-            this.mascota = new Mascota();
-            this.mascota.setId(id);
-        }
-    }
-
-    @JsonProperty("profesionalId")
-    public Long getProfesionalId() {
-        return profesional != null ? profesional.getId() : null;
-    }
-
-    @JsonProperty("profesionalId")
-    public void setProfesionalId(Long id) {
-        if (id != null) {
-            this.profesional = new Profesional();
-            this.profesional.setId(id);
-        }
-    }
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }
