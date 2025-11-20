@@ -36,4 +36,9 @@ public class Sucursal {
     private List<Cita> citas;
 
     private Boolean activa = true;
+
+
+    @Column(nullable = false)
+    private String ciudad;
+
 }
