@@ -41,7 +41,6 @@ build/
 
 # Application properties — DO NOT PUSH TO GITHUB
 src/main/resources/application.properties
-src/main/resources/application-prod.properties
 src/main/resources/application-local.properties
 src/main/resources/application-*.properties
 
