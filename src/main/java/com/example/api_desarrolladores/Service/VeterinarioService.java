@@ -1,11 +1,9 @@
 package com.example.api_desarrolladores.Service;
 
-import com.example.api_desarrolladores.Data.CitaDTOs.AtenderCitaDTO;
-import com.example.api_desarrolladores.Data.CitaDTOs.CitaDetalleDTO;
-import com.example.api_desarrolladores.Data.CitaDTOs.CitaVeterinarioDTO;
-import com.example.api_desarrolladores.Data.CitaDTOs.FinalizarCitaDTO;
+import com.example.api_desarrolladores.Data.CitaDTOs.*;
 import com.example.api_desarrolladores.Data.ResenaDTO.ResenaDTO;
 import com.example.api_desarrolladores.Data.ResponsesGenerales.EstadisticasVeterinarioDTO;
+import com.example.api_desarrolladores.Data.ResponsesGenerales.ResenasResponse;
 import com.example.api_desarrolladores.Data.UsuarioVeterinarioDTOs.VeterinarioPerfilDTO;
 import com.example.api_desarrolladores.Model.*;
 import com.example.api_desarrolladores.Repository.CitaRepository;
@@ -52,11 +50,11 @@ public class VeterinarioService {
     }
 
     @Transactional(readOnly = true)
-    public CitaDetalleDTO obtenerDetalleCita(Long veterinarioId, Long citaId) {
+    public CitaResumenDTO obtenerDetalleCita(Long veterinarioId, Long citaId) {
         Cita cita = citaRepository.findByIdAndVeterinarioId(citaId, veterinarioId)
-                .orElseThrow(() -> new RuntimeException("Cita no encontrada o no tiene permiso"));
+                .orElseThrow(() -> new RuntimeException("Cita no encontrada"));
 
-        return mapearACitaDetalleDTO(cita);
+        return mapearACitaResumenDTO(cita);
     }
 
     @Transactional
@@ -120,12 +118,20 @@ public class VeterinarioService {
     }
 
     @Transactional(readOnly = true)
-    public List<ResenaDTO> obtenerResenas(Long veterinarioId) {
+    public ResenasResponse obtenerResenas(Long veterinarioId) {
         List<Resena> resenas = resenaRepository.findByVeterinarioIdOrderByFechaDesc(veterinarioId);
 
-        return resenas.stream()
+        List<ResenaDTO> resenasDTO = resenas.stream()
                 .map(this::mapearAResenaDTO)
                 .collect(Collectors.toList());
+
+        Double promedio = resenaRepository.getPromedioCalificacionByVeterinarioId(veterinarioId);
+
+        return ResenasResponse.builder()
+                .resenas(resenasDTO)
+                .total(resenasDTO.size())
+                .promedioCalificacion(promedio != null ? promedio : 0.0)
+                .build();
     }
 
     @Transactional(readOnly = true)
@@ -212,6 +218,35 @@ public class VeterinarioService {
                 .fecha(r.getCreatedAt())
                 .nombreCliente(r.getUsuario().getNombre())
                 .nombreMascota(r.getCita().getMascota().getNombre())
+                .build();
+    }
+    private CitaResumenDTO mapearACitaResumenDTO(Cita c) {
+        Mascota m = c.getMascota();
+
+        return CitaResumenDTO.builder()
+                .id(c.getId())
+                .fechaHora(c.getFechaHora())
+                .motivo(c.getMotivoCita())
+                .estado(c.getEstado().name())
+                .diagnostico(c.getDiagnostico())
+                .tratamiento(c.getTratamiento())
+                .observaciones(c.getObservaciones())
+                .mascotaId(m.getId())
+                .mascotaNombre(m.getNombre())
+                .mascotaEspecie(m.getEspecie())
+                .mascotaRaza(m.getRaza())
+                .mascotaEdad(m.getEdad())
+                .mascotaPeso(m.getPeso())
+                .mascotaColor(m.getColor())
+                .mascotaVacunas(m.getVacunas())
+                .mascotaAlergias(m.getAlergias())
+                .mascotaHistorialMedico(m.getHistorialMedico())
+                .mascotaMedicacionActual(m.getMedicacionActual())
+                .mascotaNotasVeterinarias(m.getNotasVeterinarias())
+                .duenoNombre(m.getUsuario().getNombre())
+                .duenoTelefono(m.getUsuario().getTelefono())
+                .duenoEmail(m.getUsuario().getEmail())
+                .duenoDireccion(m.getUsuario().getDireccion())
                 .build();
     }
 }
