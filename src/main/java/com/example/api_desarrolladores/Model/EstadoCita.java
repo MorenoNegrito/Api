@@ -1,6 +1,6 @@
 package com.example.api_desarrolladores.Model;
 
-enum EstadoCita {
+public enum EstadoCita {
     PENDIENTE,
     CONFIRMADA,
     EN_CURSO,

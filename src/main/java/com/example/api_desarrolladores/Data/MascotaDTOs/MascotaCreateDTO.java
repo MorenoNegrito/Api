@@ -1,8 +1,8 @@
 package com.example.api_desarrolladores.Data.MascotaDTOs;
 import lombok.*;
 
-import java.util.List;
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class MascotaCreateDTO {
@@ -12,6 +12,6 @@ public class MascotaCreateDTO {
     private String edad;
     private Double peso;
     private String color;
-    private List<String> vacunas;
+    private String vacunas;
     private String alergias;
 }

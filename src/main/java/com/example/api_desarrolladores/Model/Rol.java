@@ -1,6 +1,6 @@
 package com.example.api_desarrolladores.Model;
 
-enum Rol {
+public enum Rol {
     USUARIO,
     VETERINARIO,
     ADMIN

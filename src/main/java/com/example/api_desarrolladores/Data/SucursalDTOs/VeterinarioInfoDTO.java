@@ -6,10 +6,8 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SucursalDTO {
+public class VeterinarioInfoDTO {
     private Long id;
     private String nombre;
-    private String direccion;
-    private String telefono;
-    private String horarioAtencion;
+    private String especialidad;
 }

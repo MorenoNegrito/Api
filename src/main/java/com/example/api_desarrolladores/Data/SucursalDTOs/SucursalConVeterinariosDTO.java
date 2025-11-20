@@ -1,13 +1,11 @@
 package com.example.api_desarrolladores.Data.SucursalDTOs;
 
 import com.example.api_desarrolladores.Data.UsuarioVeterinarioDTOs.VeterinarioDTO;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import lombok.*;
 import java.util.List;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class SucursalConVeterinariosDTO {

@@ -1,18 +1,13 @@
 package com.example.api_desarrolladores.Data.UsuarioVeterinarioDTOs;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import lombok.*;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class VeterinarioDTO {
+public class VeterinarioInfoDTO {
     private Long id;
     private String nombre;
     private String especialidad;
-    private Double calificacion;
 }

@@ -1,12 +1,12 @@
 package com.example.api_desarrolladores.Data.MascotaDTOs;
+
 import lombok.*;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MascotaVeterinarioDTO {
-    private Long id;
+public class MascotaUpdateDTO {
     private String nombre;
     private String especie;
     private String raza;
@@ -15,9 +15,4 @@ public class MascotaVeterinarioDTO {
     private String color;
     private String vacunas;
     private String alergias;
-
-    // Datos solo para veterinario
-    private String historialMedico;
-    private String medicacionActual;
-    private String notasVeterinarias;
 }

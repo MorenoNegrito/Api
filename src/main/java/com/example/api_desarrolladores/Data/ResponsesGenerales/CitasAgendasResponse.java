@@ -1,6 +1,6 @@
 package com.example.api_desarrolladores.Data.ResponsesGenerales;
 
-import com.example.api_desarrolladores.Data.ResenaDTO.ResenaDTO;
+import com.example.api_desarrolladores.Data.CitaDTOs.CitaVeterinarioDTO;
 import lombok.*;
 import java.util.List;
 
@@ -8,8 +8,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResenasResponse {
-    private List<ResenaDTO> resenas;
+public class CitasAgendasResponse {
+    private List<CitaVeterinarioDTO> citas;
     private int total;
-    private Double promedioCalificacion;
 }

@@ -1,12 +1,15 @@
 package com.example.api_desarrolladores.Data.ResponsesGenerales;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
+@Builder
 @NoArgsConstructor
-@AllArgsConstructor
+
 public class MessageResponse {
     private String message;
+
+    public MessageResponse(String message) {
+        this.message = message;
+    }
 }

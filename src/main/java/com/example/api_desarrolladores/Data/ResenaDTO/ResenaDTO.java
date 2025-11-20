@@ -1,16 +1,17 @@
 package com.example.api_desarrolladores.Data.ResenaDTO;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import java.time.LocalDateTime;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResenaDTO {
     private Long id;
-    private String nombreCliente;
+    private int calificacion; // 1-5
     private String comentario;
-    private Integer estrellas;
-    private String fecha; // Formateado: "Hace 2 días"
+    private LocalDateTime fecha;
+    private String nombreCliente;
+    private String nombreMascota;
 }
