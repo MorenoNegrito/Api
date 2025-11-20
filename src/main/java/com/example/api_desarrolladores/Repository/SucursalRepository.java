@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface SucursalRepository extends JpaRepository<Sucursal, Long> {
 
-    List<Sucursal> findByActivoTrue();
+    List<Sucursal> findByActivaTrue();  // <-- NOMBRE CORRECTO
 
     List<Sucursal> findByCiudad(String ciudad);
 

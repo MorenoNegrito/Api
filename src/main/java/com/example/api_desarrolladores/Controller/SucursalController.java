@@ -26,7 +26,7 @@ public class SucursalController {
     @GetMapping
     public ResponseEntity<?> obtenerSucursales() {
         try {
-            List<Sucursal> sucursales = sucursalRepository.findByActivoTrue();
+            List<Sucursal> sucursales = sucursalRepository.findByActivaTrue();
             List<SucursalDTO> sucursalesDTO = sucursales.stream()
                     .map(this::mapearASucursalDTO)
                     .collect(Collectors.toList());
