@@ -1,10 +1,13 @@
+# =============================
+# BUILD & IDE FILES
+# =============================
 HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### STS ###
+# STS
 .apt_generated
 .classpath
 .factorypath
@@ -13,13 +16,13 @@ target/
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
+# IntelliJ IDEA
 .idea
 *.iws
 *.iml
 *.ipr
 
-### NetBeans ###
+# NetBeans
 /nbproject/private/
 /nbbuild/
 /dist/
@@ -29,5 +32,31 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### VS Code ###
+# VS Code
 .vscode/
+
+# =============================
+# SENSITIVE CONFIG FILES (VERY IMPORTANT)
+# =============================
+
+# Application properties — DO NOT PUSH TO GITHUB
+src/main/resources/application.properties
+src/main/resources/application-prod.properties
+src/main/resources/application-local.properties
+src/main/resources/application-*.properties
+
+# If you ever use YAML configs
+src/main/resources/application.yml
+src/main/resources/application-*.yml
+
+# =============================
+# LOGS
+# =============================
+logs/
+*.log
+
+# =============================
+# OS FILES
+# =============================
+.DS_Store
+Thumbs.db
