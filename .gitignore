@@ -24,29 +24,16 @@ target/
 
 # NetBeans
 /nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
 # VS Code
 .vscode/
-
-# =============================
-# SENSITIVE CONFIG FILES (VERY IMPORTANT)
-# =============================
-
-# Application properties — DO NOT PUSH TO GITHUB
-src/main/resources/application.properties
-src/main/resources/application-local.properties
-src/main/resources/application-*.properties
-
-# If you ever use YAML configs
-src/main/resources/application.yml
-src/main/resources/application-*.yml
 
 # =============================
 # LOGS
