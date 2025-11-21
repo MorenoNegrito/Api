@@ -41,7 +41,8 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/api/admin/**",
-                                "/api/resenas/veterinario/**"
+                                "/api/resenas/veterinario/**",
+                                "/api/health"
                         ).permitAll()
                         .anyRequest().authenticated()     // ← Todo lo demás requiere token
                 )
