@@ -39,7 +39,8 @@ public class SecurityConfig {
                                 "/api/auth/**",           // ← Login, Register (público)
                                 "/api/sucursales/**",     // ← Sucursales (público)
                                 "/swagger-ui/**",
-                                "/v3/api-docs/**"
+                                "/v3/api-docs/**",
+                                "/api/admin/**"
                         ).permitAll()
                         .anyRequest().authenticated()     // ← Todo lo demás requiere token
                 )
