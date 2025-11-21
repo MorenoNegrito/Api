@@ -43,4 +43,8 @@ public class Usuario {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(nullable = false)
+    private Boolean activo = true;  // Por defecto activo al crear
+
 }
