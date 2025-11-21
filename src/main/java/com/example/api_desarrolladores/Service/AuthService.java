@@ -3,18 +3,15 @@ package com.example.api_desarrolladores.Service;
 
 
 import com.example.api_desarrolladores.Config.JwtUtil;
-import com.example.api_desarrolladores.Data.AuthDTOs.LoginRequest;
-import com.example.api_desarrolladores.Data.AuthDTOs.LoginResponse;
-import com.example.api_desarrolladores.Data.AuthDTOs.RegisterRequest;
-import com.example.api_desarrolladores.Model.Rol;
-import com.example.api_desarrolladores.Model.Usuario;
-import com.example.api_desarrolladores.Model.Veterinario;
-import com.example.api_desarrolladores.Repository.UsuarioRepository;
-import com.example.api_desarrolladores.Repository.VeterinarioRepository;
+import com.example.api_desarrolladores.Data.AuthDTOs.*;
+import com.example.api_desarrolladores.Model.*;
+import com.example.api_desarrolladores.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -24,22 +21,26 @@ public class AuthService {
     private final VeterinarioRepository veterinarioRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final SucursalRepository sucursalRepository;
 
     @Transactional
-    public LoginResponse registrarUsuario(RegisterRequest request) {
-        // Validar que el email no exista
-        if (usuarioRepository.existsByEmail(request.getEmail())) {
+    public LoginResponse register(RegisterRequest request) {
+        // Validar si el email ya existe
+        if (usuarioRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new RuntimeException("El email ya está registrado");
         }
 
         // Crear usuario
         Usuario usuario = new Usuario();
         usuario.setNombre(request.getNombre());
+        usuario.setApellido(request.getApellido());  // ← AGREGAR ESTO
         usuario.setEmail(request.getEmail());
         usuario.setPassword(passwordEncoder.encode(request.getPassword()));
         usuario.setTelefono(request.getTelefono());
         usuario.setDireccion(request.getDireccion());
         usuario.setRol(Rol.USUARIO);
+        usuario.setActivo(true);  // ← AGREGAR ESTO
+        usuario.setCreatedAt(LocalDateTime.now());
 
         usuario = usuarioRepository.save(usuario);
 
@@ -49,52 +50,108 @@ public class AuthService {
         return LoginResponse.builder()
                 .token(token)
                 .userId(usuario.getId())
-                .nombre(usuario.getNombre())
+                .veterinarioId(null)
+                .nombre(usuario.getNombre() + " " + usuario.getApellido())  // ← CAMBIAR ESTO
                 .email(usuario.getEmail())
                 .rol(usuario.getRol().name())
+                .especialidad(null)
                 .build();
     }
 
-    @Transactional(readOnly = true)
-    public LoginResponse loginUsuario(LoginRequest request) {
-        // Buscar usuario
-        Usuario usuario = usuarioRepository.findByEmailAndRol(request.getEmail(), Rol.USUARIO)
-                .orElseThrow(() -> new RuntimeException("Credenciales inválidas"));
+    @Transactional
+    public LoginResponse login(LoginRequest request) {
+        // Intentar buscar como usuario
+        var usuarioOpt = usuarioRepository.findByEmail(request.getEmail());
+        if (usuarioOpt.isPresent()) {
+            Usuario usuario = usuarioOpt.get();
 
-        // Validar contraseña
-        if (!passwordEncoder.matches(request.getPassword(), usuario.getPassword())) {
-            throw new RuntimeException("Credenciales inválidas");
+            if (!passwordEncoder.matches(request.getPassword(), usuario.getPassword())) {
+                throw new RuntimeException("Credenciales inválidas");
+            }
+
+            if (!usuario.getActivo()) {
+                throw new RuntimeException("Usuario inactivo");
+            }
+
+            String token = jwtUtil.generateToken(usuario.getEmail(), usuario.getRol().name());
+
+            return LoginResponse.builder()
+                    .token(token)
+                    .userId(usuario.getId())
+                    .veterinarioId(null)
+                    .nombre(usuario.getNombre() + " " + usuario.getApellido())
+                    .email(usuario.getEmail())
+                    .rol(usuario.getRol().name())
+                    .especialidad(null)
+                    .build();
         }
 
-        // Generar token
-        String token = jwtUtil.generateToken(usuario.getEmail(), usuario.getRol().name());
+        // Intentar buscar como veterinario
+        var veterinarioOpt = veterinarioRepository.findByEmail(request.getEmail());
+        if (veterinarioOpt.isPresent()) {
+            Veterinario veterinario = veterinarioOpt.get();
 
-        return LoginResponse.builder()
-                .token(token)
-                .userId(usuario.getId())
-                .nombre(usuario.getNombre())
-                .email(usuario.getEmail())
-                .rol(usuario.getRol().name())
-                .build();
+            if (!passwordEncoder.matches(request.getPassword(), veterinario.getPassword())) {
+                throw new RuntimeException("Credenciales inválidas");
+            }
+
+            String token = jwtUtil.generateToken(veterinario.getEmail(), veterinario.getRol().name());
+
+            return LoginResponse.builder()
+                    .token(token)
+                    .userId(null)
+                    .veterinarioId(veterinario.getId())
+                    .nombre(veterinario.getNombre())
+                    .email(veterinario.getEmail())
+                    .rol(veterinario.getRol().name())
+                    .especialidad(veterinario.getEspecialidad())
+                    .build();
+        }
+
+        throw new RuntimeException("Usuario no encontrado");
     }
 
-    @Transactional(readOnly = true)
-    public LoginResponse loginVeterinario(LoginRequest request) {
-        // Buscar veterinario directamente (tiene email y password propios)
-        Veterinario veterinario = veterinarioRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Credenciales inválidas"));
-
-        // Validar contraseña
-        if (!passwordEncoder.matches(request.getPassword(), veterinario.getPassword())) {
-            throw new RuntimeException("Credenciales inválidas");
+    @Transactional
+    public LoginResponse registerVeterinario(VeterinarioRegisterRequest request) {
+        // Validar si el email ya existe
+        if (veterinarioRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new RuntimeException("El email ya está registrado");
         }
+
+        if (usuarioRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new RuntimeException("El email ya está registrado como usuario");
+        }
+
+        // Buscar sucursal si se proporcionó
+        Sucursal sucursal = null;
+        if (request.getSucursalId() != null) {
+            sucursal = sucursalRepository.findById(request.getSucursalId())
+                    .orElseThrow(() -> new RuntimeException("Sucursal no encontrada"));
+        }
+
+        // Crear veterinario
+        Veterinario veterinario = new Veterinario();
+        veterinario.setNombre(request.getNombre());
+        veterinario.setEmail(request.getEmail());
+        veterinario.setPassword(passwordEncoder.encode(request.getPassword()));
+        veterinario.setTelefono(request.getTelefono());
+        veterinario.setEspecialidad(request.getEspecialidad());
+        veterinario.setLicencia(request.getLicencia());
+        veterinario.setSucursal(sucursal);
+        veterinario.setRol(Rol.VETERINARIO);
+        veterinario.setCalificacion(0.0);
+        veterinario.setServiciosCompletados(0);
+        veterinario.setServiciosCancelados(0);
+        veterinario.setCreatedAt(LocalDateTime.now());
+
+        veterinario = veterinarioRepository.save(veterinario);
 
         // Generar token
         String token = jwtUtil.generateToken(veterinario.getEmail(), veterinario.getRol().name());
 
         return LoginResponse.builder()
                 .token(token)
-                .userId(veterinario.getId())
+                .userId(null)
                 .veterinarioId(veterinario.getId())
                 .nombre(veterinario.getNombre())
                 .email(veterinario.getEmail())

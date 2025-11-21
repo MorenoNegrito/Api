@@ -7,11 +7,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterRequest {
+public class VeterinarioRegisterRequest {
     private String nombre;
-    private String apellido;  // ← AGREGAR ESTO
     private String email;
     private String password;
     private String telefono;
-    private String direccion;
+    private String especialidad;
+    private String licencia;
+    private Long sucursalId;
 }
